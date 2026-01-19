@@ -1,20 +1,46 @@
-import java.awt.*;
 import javax.swing.*;
+import java.awt.*;
+import java.net.URL;
 
+/**
+ * Manages the game's ground level.
+ */
 public class Level {
-
-    private int groundY = 550; // 🔥 TANAH LEBIH NAIK
+    private int groundSurfaceY;
+    private final int groundHeight = 250;
+    private final int surfaceThickness = 85;
     private Image groundImage;
 
     public Level() {
-        groundImage = new ImageIcon("assets/ground.png").getImage();
+        try {
+            URL groundUrl = getClass().getResource("/assets/Ground.png");
+            if (groundUrl != null) {
+                groundImage = new ImageIcon(groundUrl).getImage();
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to load ground image.");
+            groundImage = null;
+        }
     }
 
-    public void draw(Graphics g) {
-        g.drawImage(groundImage, 0, groundY, 1800, 150, null);
+    /**
+     * Draws the ground, stretching to the panel's width.
+     */
+    public void draw(Graphics g, int panelWidth) {
+        if (groundImage == null) return;
+
+        int yDraw = groundSurfaceY - (groundHeight - surfaceThickness);
+        g.drawImage(groundImage, 0, yDraw, panelWidth, groundHeight, null);
     }
 
     public int getGroundY() {
-        return groundY;
+        return groundSurfaceY;
+    }
+
+    /**
+     * Updates the ground's Y position based on the panel's height.
+     */
+    public void updateGroundY(int panelHeight) {
+        groundSurfaceY = panelHeight - surfaceThickness;
     }
 }
